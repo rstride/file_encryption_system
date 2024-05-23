@@ -1,49 +1,31 @@
-#include <iostream>
-#include <string>
-#include "encryption.h"
-#include "decryption.h"
-
-// Fonction pour afficher le menu de l'application
-void displayMenu() {
-    std::cout << "File Encryption System" << std::endl;
-    std::cout << "1. Encrypt a file" << std::endl;
-    std::cout << "2. Decrypt a file" << std::endl;
-    std::cout << "3. Exit" << std::endl;
-    std::cout << "Select an option: ";
-}
+#include "FileEncryptor.h"
 
 int main() {
-    bool running = true;
-    std::string filename;
-    int choice;
+    // 32 bytes key for AES-256
+    std::vector<unsigned char> key = {
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+        0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f
+    };
 
-    while (running) {
-        displayMenu();
-        std::cin >> choice;
+    FileEncryptor encryptor(key);
 
-        switch (choice) {
-            case 1:
-                std::cout << "Enter filename to encrypt: ";
-                std::cin >> filename;
-                encryptFile(filename);
-                std::cout << "File encrypted successfully." << std::endl;
-                break;
-            case 2:
-                std::cout << "Enter filename to decrypt: ";
-                std::cin >> filename;
-                decryptFile(filename);
-                std::cout << "File decrypted successfully." << std::endl;
-                break;
-            case 3:
-                std::cout << "Exiting application." << std::endl;
-                running = false;
-                break;
-            default:
-                std::cout << "Invalid option, please try again." << std::endl;
-                break;
-        }
+    std::string inputFilePath = "input.txt";
+    std::string encryptedFilePath = "encrypted.bin";
+    std::string decryptedFilePath = "decrypted.txt";
+
+    try {
+        encryptor.encryptFile(inputFilePath, encryptedFilePath);
+        std::cout << "File encrypted successfully!" << std::endl;
+
+        encryptor.decryptFile(encryptedFilePath, decryptedFilePath);
+        std::cout << "File decrypted successfully!" << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
 
     return 0;
 }
+
  
